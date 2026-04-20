@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  	<meta charset="UTF-8" />
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  	<title>Мессенджер — главная</title>
+  	<style>
+    :root{
+      	--orange-400: #ff9b2d;
+      	--orange-500: #ff7a0a;
+      	--orange-600: #e06700;
+      	--bg: #0f0f0f;
+      	--card: #1e1e1e;
+      	--text: #f5f5f5;
+      	--muted: #bdbdbd;
+      	--border: rgba(255, 122, 10, 0.25);
+      	--shadow: 0 8px 24px rgba(0,0,0,.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { height: 100%; margin: 0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #0a0a0a; color: var(--text); }
+
+    .app {
+      	display: grid;
+      	grid-template-columns: 320px 1fr;
+      	height: 100vh;
+      	gap: 0;
+    }
+
+    /* левая панель: списки чатов */
+    .sidebar {
+      	border-right: 1px solid var(--border);
+      	background: linear-gradient(180deg, #1b1b1b 0%, #171717 100%);
+      	padding: 14px;
+      	overflow: hidden;
+    }
+
+    .sidebar-header {
+      	display: flex;
+      	align-items: center;
+      	justify-content: space-between;
+      	padding: 10px 8px;
+      	border-bottom: 1px solid var(--border);
+      	margin-bottom: 8px;
+    }
+
+    .brand-mini {
+      	display: flex; align-items: center; gap: 8px;
+    }
+    .brand-dot {
+      	width: 12px; height: 12px; border-radius: 50%;
+      	background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+    }
+    .brand-title { font-size: 14px; color: #f2f2f2; }
+
+    .search {
+      	width: 100%; padding: 8px 10px; border-radius: 6px;
+      	border: 1px solid #333; background: #111; color: #ddd;
+    }
+
+    .chat-list {
+      	margin-top: 10px; overflow-y: auto; height: calc(100% - 60px);
+    }
+
+    .chat-item {
+      	display: flex; align-items: center; gap: 10px;
+      	padding: 10px;
+      	border-radius: 8px;
+      	cursor: pointer;
+      	color: #eae8e8;
+      	border: 1px solid transparent;
+    }
+
+	.chat-item:hover { background: #252525; border-color: var(--border); }
+
+    .avatar {
+      	width: 40px; height: 40px; border-radius: 50%;
+      	background: #333; display: inline-flex; align-items: center; justify-content: center;
+      	font-weight: 700;
+    }
+    .chat-meta { display: flex; flex-direction: column; gap: 2px; }
+    .chat-name { font-size: 14px; }
+    .chat-preview { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+
+    /* правая панель: чат */
+    .chat {
+      display: grid; grid-template-rows: auto 1fr auto;
+      height: 100%; background: #0b0b0b;
+    }
+
+    .chat-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px; border-bottom: 1px solid var(--border);
+      background: #151515;
+    }
+
+    .chat-title { font-size: 16px; font-weight: 600; }
+    .chat-actions { display: flex; gap: 8px; }
+
+    .chat-area {
+      padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .message {
+      max-width: 70%; padding: 10px 12px; border-radius: 12px;
+      background: #252525; border: 1px solid #2e2e2e;
+    }
+    .message.self { align-self: flex-end; background: linear-gradient(135deg, #ff9b2d, #e06700); color: #1a0a00; border: none; }
+    .message .time { font-size: 10px; opacity: 0.7; margin-top: 4px; }
+
+    .composer {
+      display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border);
+      background: #111;
+    }
+    .input-area {
+      flex: 1;
+      display: flex; align-items: center;
+      border-radius: 8px; border: 1px solid #333; padding: 8px 10px; background: #1a1a1a;
+    }
+    .input-area input {
+      width: 100%; border: none; outline: none; background: transparent; color: #fff;
+    }
+    .send-btn {
+      padding: 10px 14px; border-radius: 8px; border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--orange-500), var(--orange-600));
+      color: #1a0a00; font-weight: 700;
+    }
+
+    /* адаптивность: уменьшаем горизонтальное разделение на малых экранах */
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; height: auto; }
+      .sidebar { height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+      .chat { height: auto; }
+      .chat-area { height: auto; max-height: 50vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Мессенджер: список чатов слева и чат справа">
+    <!-- Левая панель: списки чатов -->
+    <aside class="sidebar" aria-label="Список чатов">
+      <div class="sidebar-header">
+        <div class="brand-mini">
+          <span class="brand-dot" aria-hidden="true" style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg, var(--orange-500), var(--orange-600));"></span>
+          <span class="brand-title">Чаты</span>
+        </div>
+        <button aria-label="Создать чат" style="background:transparent;border:1px solid #444;color:#fff;border-radius:6px;padding:6px 10px; cursor:pointer;">+</button>
+      </div>
+
+      <input class="search" type="search" placeholder="Поиск чатов" aria-label="Поиск чатов" />
+
+      <div class="chat-list" id="chatList" role="navigation" aria-label="Список чатов">
+        <!-- Пример элементов списка чатов -->
+        <div class="chat-item" data-chat="general" aria-label="Чат general">
+          <div class="avatar">G</div>
+          <div class="chat-meta">
+            <span class="chat-name">Общий</span>
+            <span class="chat-preview">Последнее сообщение в чате...</span>
+          </div>
+        </div>
+        <div class="chat-item" data-chat="work" aria-label="Чат work">
+          <div class="avatar">W</div>
+          <div class="chat-meta">
+            <span class="chat-name">Работа</span>
+            <span class="chat-preview">Дедлайны и задачи...</span>
+          </div>
+        </div>
+        <div class="chat-item" data-chat="friends" aria-label="Чат friends">
+          <div class="avatar">F</div>
+          <div class="chat-meta">
+            <span class="chat-name">Друзья</span>
+            <span class="chat-preview">Анонсы и встречи...</span>
+          </div>
+        </div>
+        <!-- добавляйте элементы по мере необходимости -->
+      </div>
+    </aside>
+
+    <!-- Правая панель: активный чат -->
+    <section class="chat" aria-label="Активный чат">
+      <header class="chat-header">
+        <div class="chat-title" id="activeChatTitle">Общий</div>
+        <div class="chat-actions">
+          <button aria-label="Профиль пользователя" style="background:transparent;border:1px solid #444;color:#fff;border-radius:6px;padding:6px 10px;cursor: pointer;">Профиль</button>
+          <button aria-label="Настройки чата" style="background:transparent;border:1px solid #444;color:#fff;border-radius:6px;padding:6px 10px;cursor: pointer;">Настройки</button>
+        </div>
+      </header>
+
+      <div class="chat-area" id="messages" role="log" aria-live="polite">
+        <!-- Пример сообщений -->
+        <div class="message" aria-label="Сообщение от другого участника">
+          Привет! Это пример переписки в чате "Общий".
+          <div class="time">12:01</div>
+        </div>
+        <div class="message self" aria-label="Ваше сообщение">
+          Привет! Как дела?
+          <div class="time">12:02</div>
+        </div>
+      </div>
+
+      <form class="composer" onsubmit="return false;" aria-label="Форма отправки сообщения">
+        <div class="input-area" role="group" aria-label="Поле ввода сообщения">
+          <input id="messageInput" type="text" placeholder="Напишите сообщение..." />
+        </div>
+        <button class="send-btn" type="submit" onclick="sendMessage()">Отправить</button>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    // Пример простой логики переключения чатов и отправки сообщений
+    const chatItems = document.querySelectorAll('.chat-item');
+    const activeTitle = document.getElementById('activeChatTitle');
+    const messagesEl = document.getElementById('messages');
+    const input = document.getElementById('messageInput');
+
+    chatItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const name = item.querySelector('.chat-name').innerText;
+        activeTitle.textContent = name;
+        // Очистка списка сообщений для простоты примера
+        messagesEl.innerHTML = '';
+        // Добавить приветственное сообщение для выбранного чата
+        const hello = document.createElement('div');
+        hello.className = 'message';
+        hello.textContent = 'Вы выбрали чат: ' + name;
+        messagesEl.appendChild(hello);
+        // Прокрутить к новому сообщению
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      });
+    });
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      const msg = document.createElement('div');
+      msg.className = 'message self';
+      msg.textContent = text;
+      const time = document.createElement('div');
+      time.className = 'time';
+      time.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      msg.appendChild(time);
+      messagesEl.appendChild(msg);
+      input.value = '';
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      // Эмуляция ответа от собеседника
+      setTimeout(() => {
+        const reply = document.createElement('div');
+        reply.className = 'message';
+        reply.textContent = 'Это ответ от собеседника.';
+        const t = document.createElement('div');
+        t.className = 'time';
+        t.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        reply.appendChild(t);
+        messagesEl.appendChild(reply);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      }, 800);
+    }
+
+    // Простой поиск по чатам
+    const search = document.querySelector('.search');
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase();
+      chatItems.forEach(it => {
+        const name = it.querySelector('.chat-name').innerText.toLowerCase();
+        it.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

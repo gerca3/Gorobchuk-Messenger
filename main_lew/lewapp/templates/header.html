@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}BolgarskyLew{% endblock %}</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+  <header>
+    <nav>
+        <a href="{% url 'index'%}">Главная</a>
+      <a href="{% url 'group_test'%}">Группы</a>
+        <a href="{% url 'login'%}"> Вход </a>
+    </nav>
+  </header>
+
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

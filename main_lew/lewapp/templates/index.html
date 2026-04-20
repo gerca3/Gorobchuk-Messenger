@@ -1,0 +1,43 @@
+{% extends 'header.html' %}
+
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+
+<body>
+    <p>{{ user.username }}</p>
+
+    <br>
+
+    <input type="text" id="usernameInputForMessage" placeholder="Username">
+    <br>
+    <input type="text" id="textInputForMessage" placeholder="Message">
+    <br>
+    <input type="file" id="fileInputForMessage" multiple>
+    <br>
+    <button id="sendMessageButton">Send</button>
+
+    <br>
+
+    <input type="text" id="usernameInputForCall" placeholder="Username">
+    <button id="makeCallButton">Make call</button>
+
+    <br>
+
+    {% if user.is_authenticated %}
+
+        <section id="callRequests">
+        </section>
+
+        <section id="callsActive">
+        </section>
+
+        <section id="messeges">
+        </section>
+
+    {% endif %}
+</body>
+<script src="{% static 'index.js' %}"></script>
+</html>
+{% endblock %}

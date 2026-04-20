@@ -1,0 +1,44 @@
+{% extends 'header.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<body>
+    <p>Logged in as: <strong>{{ user.username }}</strong></p>
+
+    <h2>Group Chats</h2>
+
+    <div>
+        <h3>Create new group</h3>
+        <input type="text" id="groupName" placeholder="Group name">
+        <br>
+        <input type="text" id="groupDescription" placeholder="Description">
+        <br>
+        <input type="text" id="groupUsers" placeholder="Usernames (comma separated)">
+        <br>
+        <button id="createGroupButton">Create Group</button>
+    </div>
+
+    <div>
+        <h3>My groups</h3>
+        <div id="groupList" class="group-list"></div>
+    </div>
+
+    <div id="activeChat" style="display: none;">
+        <h3>Chat: <span id="activeGroupName"></span></h3>
+        <div id="active-group-info">Loading...</div>
+        <div id="chat-messages"></div>
+
+        <input type="text" id="groupMessageText" placeholder="Type a message">
+        <br>
+        <input type="file" id="groupFileInput" multiple>
+        <br>
+        <button id="sendGroupMessageButton">Send to group</button>
+    </div>
+
+<script src="{% static 'group_test.js' %}"></script>
+</body>
+</html>
+{% endblock %}
